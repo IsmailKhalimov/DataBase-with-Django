@@ -21,7 +21,7 @@ from myapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),  #http://127.0.0.1:8000
+    path('', include('myapp.urls')),  # http://127.0.0.1:8000
 ]
 
-handler404 = views.page_not_fount
+handler404 = views.page_not_found

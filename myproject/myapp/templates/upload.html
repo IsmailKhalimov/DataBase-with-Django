@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +15,46 @@
             {{ form.as_p }}
             <button type="submit" class="btn">Upload</button>
         </form>
-        <p></p>
+
+        {% if db_columns and file_columns %}
+        <h2>Match Columns</h2>
+        <form method="post" action="{% url 'upload_file' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="table" value="{{ table_name }}">
+            <table>
+                <tr>
+                    <th>DataBase Column</th>
+                    <th>File Column</th>
+                </tr>
+                {% for db_col in db_columns %}
+                <tr>
+                    <td>{{ db_col }}</td>
+                    <td>
+                        <select name="mapping_{{ db_col }}">
+                            <option value="">-- Select --</option>
+                            {% for file_col in file_columns %}
+                            <option value="{{ file_col }}">{{ file_col }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <button type="submit" class="btn">Save Mappings and Upload</button>
+        </form>
+        {% endif %}
+
         <a href="{% url 'index' %}" class="btn">Back to Home</a>
     </div>
+    <script>
+        document.querySelector('select[name="action"]').addEventListener('change', function() {
+            if (this.value === 'add') {
+                document.querySelector('select[name="table"]').parentElement.style.display = 'block';
+            } else {
+                document.querySelector('select[name="table"]').parentElement.style.display = 'none';
+            }
+        });
+        document.querySelector('select[name="action"]').dispatchEvent(new Event('change'));
+    </script>
 </body>
 </html>

@@ -14,3 +14,9 @@ class Team(models.Model):
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     championships_won = models.IntegerField()
+
+
+# Новая модель для хранения динамически созданных таблиц
+class CustomTable(models.Model):
+    name = models.CharField(max_length=255, unique=True)  # Название таблицы
+    created_at = models.DateTimeField(auto_now_add=True)  # Дата создания
