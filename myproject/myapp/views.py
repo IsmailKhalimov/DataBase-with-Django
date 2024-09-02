@@ -91,22 +91,18 @@ def upload_file(request):
     if request.method == 'POST':
         form = ActionChoiceForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-            print('lol2')
             action = form.cleaned_data['action']
             file = request.FILES['file']
             selected_columns_json = request.POST.get('selected_columns')
             selected_columns = json.loads(selected_columns_json) if selected_columns_json else {}
 
             if action == 'add':
-                print('V if')
                 table_name = form.cleaned_data['table']
                 table = get_object_or_404(CustomTable, name=table_name)
 
                 # Проверка прав доступа пользователя к таблице
                 if not request.user.is_superuser:
                     access = TableAccess.objects.filter(user=request.user, table=table, can_access=True).exists()
-                    for i in TableAccess.objects.filter(user=request.user):
-                        print(str(i).split()[-1])
                     if not access:
                         messages.error(request, "You do not have permission to access this table.")
                         return redirect('upload_file')
@@ -138,7 +134,6 @@ def upload_file(request):
                     return redirect('upload_success')
                 return HttpResponse(html)
             elif action == 'create':
-                print('Зашёл в else')
                 table_name = file.name.split('.')[0]
                 table = CustomTable(name=table_name, created_by=request.user)
                 table.save()
