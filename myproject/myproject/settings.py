@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+LOGIN_REDIRECT_URL = 'upload_file'
+LOGOUT_REDIRECT_URL = 'logout'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -83,7 +86,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 
 # Password validation

@@ -9,8 +9,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload Successful</h1>
-        <p>Data has been successfully added to the DataBase.</p>
+        <h1>Creation Successful</h1>
+        <p> <strong>{{ table_name }}</strong> table has been successfully created</p>
         <a href="{% url 'upload_file' %}" class="btn">Upload Another File</a>
         <a href="{% url 'index' %}" class="btn">Back to Home</a>
     </div>

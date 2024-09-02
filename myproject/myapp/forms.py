@@ -1,5 +1,20 @@
 from django import forms
 from django.db import connection
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomTable, TableAccess
+
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super(UserRegisterForm, self).__init__(*args, **kwargs)
+        self.fields.pop('usable_password', None)
 
 
 def get_table_choices():
@@ -16,16 +31,30 @@ def get_table_choices():
 class ActionChoiceForm(forms.Form):
     ACTION_CHOICES = [
         ('create', 'Создать новую таблицу'),
-        ('add', 'Добавить данные в существующую таблицу'),
+        ('add', 'Добавить данные в таблицу'),
     ]
     action = forms.ChoiceField(choices=ACTION_CHOICES, required=False)  # Сделали поле необязательным
+    table = forms.ChoiceField(choices=[], required=False)
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Извлекаем пользователя из переданных аргументов
         super().__init__(*args, **kwargs)
-        self.fields['table'].choices = get_table_choices()
 
-    table = forms.ChoiceField(choices=[], required=False)
-    file = forms.FileField()
+        # Инициализируем поле `table` пустыми значениями
+        self.fields['table'].choices = []
+
+        if user:
+            # Фильтруем таблицы в зависимости от прав доступа пользователя
+            if user.is_superuser:
+                # Суперпользователь видит все таблицы
+                accessible_tables = CustomTable.objects.all()
+                self.fields['table'].choices = [(table.name, table.name) for table in accessible_tables]
+            else:
+                # Обычные пользователи видят только таблицы, которые они создали
+                accessible_tables = []
+                for i in TableAccess.objects.filter(user=user):
+                    accessible_tables.append(str(i).split()[-1])
+                self.fields['table'].choices = [(table, table) for table in accessible_tables]
 
     def clean(self):
         cleaned_data = super().clean()

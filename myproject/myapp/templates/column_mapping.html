@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Columns</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Map Columns</h1>
+        <form method="post" action="{% url 'save_mappings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="table_name" value="{{ table_name }}">
+            <input type="hidden" name="file_name" value="{{ file_name }}">
+            <table>
+                <tr>
+                    <th>Database Column</th>
+                    <th>File Column</th>
+                </tr>
+                {% for db_col in db_columns %}
+                    <tr>
+                        <td>{{ db_col }}</td>
+                        <td>
+                            <select name="mapping_{{ db_col }}">
+                                <option value="">-- Select --</option>
+                                {% for file_col in file_columns %}
+                                    <option value="{{ file_col }}">{{ file_col }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <button type="submit" class="btn">Save Mappings and Upload</button>
+        </form>
+    </div>
+</body>
+</html>

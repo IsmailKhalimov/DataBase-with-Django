@@ -4,14 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Successful</title>
+    <title>Register</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="container">
-        <h1>Upload Successful</h1>
-        <p>Data has been successfully added to the DataBase.</p>
-        <a href="{% url 'upload_file' %}" class="btn">Upload Another File</a>
+        <h1>Register</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Register</button>
+        </form>
+        <br>
+        <a href="{% url 'login' %}" class="btn">Login</a>
         <a href="{% url 'index' %}" class="btn">Back to Home</a>
     </div>
 </body>

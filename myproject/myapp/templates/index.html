@@ -10,7 +10,17 @@
 <body>
     <div class="container">
         <h1>Welcome to the File Upload Service</h1>
-        <a href="{% url 'upload_file' %}" class="btn">Upload a File</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'upload_file' %}" class="btn">Upload a File</a>
+            <p>Hello, {{ user.username }}!</p>
+            <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+            <a href="#" onclick="document.getElementById('logout-form').submit();" class="btn">Выйти</a>
+        {% else %}
+            <p>Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a> to upload a file.</p>
+        {% endif %}
     </div>
 </body>
 </html>
