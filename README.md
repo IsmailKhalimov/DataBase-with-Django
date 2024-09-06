@@ -18,4 +18,4 @@
 
 HTML files are in: "myapp -> templates"
 
-CSS file is in: "staticfile -> css"
+CSS file is in: "myapp -> static -> css"
